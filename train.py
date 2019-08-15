@@ -119,6 +119,10 @@ def train(args, trainer, task, epoch_itr):
     max_update = args.max_update or math.inf
     for i, samples in enumerate(progress, start=epoch_itr.iterations_in_epoch):
         log_output = trainer.train_step(samples)
+        # TODO(jerin): 
+        # ~The fuck. This works.~ Doesn't work.
+        # https://github.com/pytorch/fairseq/issues/232
+        # torch.cuda.empty_cache()
         if log_output is None:
             continue
 
