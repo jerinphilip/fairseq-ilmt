@@ -66,8 +66,35 @@ def ILCI_meta(split):
         corpora.append(corpus)
     return corpora
 
+@dataset_register('bible-en-te', ['train', 'dev', 'test'])
+def BIBLEEnTe_meta(split):
+    corpora = []
+    for lang in ['en', 'te']:
+        sub_path = 'bible-en-te/bible.{}.{}'.format(split, lang)
+        corpus = Corpus('bible-en-te', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
 
+@dataset_register('mann-ki-baat-test', ['test'])
+def MannKiBaat_meta(split):
+    corpora = []
+    for lang in ['en','hi','ta','te']:
+        sub_path = 'mann-ki-baat-test/mkb.{}'.format(lang)
+        corpus = Corpus('mann-ki-baat-test', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
 
+@dataset_register('eenadu-en-te', ['train'])
+def EenaduBacktrans_meta(split):
+    if split in ['dev', 'test']:
+        return []
+
+    corpora = []
+    for lang in ['en','te']:
+        sub_path = 'eenadu-en-te/train.{}'.format(lang)
+        corpus = Corpus('eenadu-en-te', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
 
 if __name__ == '__main__':
     def merge(*_as):
