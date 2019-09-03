@@ -4,13 +4,10 @@ from fairseq.data.cvit.dataset import _CVITIndexedRawTextDataset
 from fairseq.data.cvit.lmdb import LMDBCorpusWriter, LMDBCorpus
 import yaml
 from multiprocessing import Pool
+from functools import partial
 import os
 from pprint import pprint
 from ilmulti.sentencepiece import build_tokenizer
-
-def add_args(parser):
-	parser.add_argument('data', help='colon separated path to data directories list, \
-						will be iterated upon during epochs in round-robin manner')
 
 def read_config(path):
     with open(path) as config:
