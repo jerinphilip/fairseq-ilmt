@@ -5,6 +5,7 @@ from fairseq.data.cvit.lmdb import LMDBCorpusWriter, LMDBCorpus
 import yaml
 from multiprocessing import Pool
 import os
+from pprint import pprint
 
 def add_args(parser):
 	parser.add_argument('data', help='colon separated path to data directories list, \
@@ -16,7 +17,6 @@ def read_config(path):
         data = yaml.load(contents)
         return data
 
-#data = read_config(args.data)
 def build_corpus(corpus):
 	from ilmulti.sentencepiece import SentencePieceTokenizer
 	tokenizer = SentencePieceTokenizer()
@@ -29,32 +29,34 @@ def build_corpus(corpus):
 		print("Built LMDB({})".format(corpus.path))
 
 
-def get_pairs(data):
+def get_pairs(data, splits, direction):
 	corpora = []
-	for split in ['train','dev','test']:
-		pairs = pairs_select(data['corpora'], split) 
-		#print(pairs)
+	for split in splits:
+		pairs = pairs_select(data['corpora'], split, direction)
 		srcs,tgts = list(zip(*pairs))
 		corpora.extend(srcs)
 		corpora.extend(tgts)
 	
 	return list(set(corpora))
 
+def mp(build_corpus , corpora):
+	pool = Pool(processes=os.cpu_count())
+	pool.map_async(build_corpus , corpora)
+	pool.close()
+	pool.join()
 
 if __name__ == '__main__':
 	parser=ArgumentParser()
 	parser.add_argument('data')
 	args = parser.parse_args()
+	splits = []
 	data = read_config(args.data)
-	#print(data) 
-	corpora=get_pairs(data)
-
-	# Create pool of processes eqvt to cores
-	# Parallel call build_corpus on corpora
-	pool = Pool(processes=os.cpu_count())
-	pool.map_async(build_corpus , corpora)
-	pool.close()
-	pool.join()
+	for corpus in data['corpora']:
+		splits.extend(data['corpora'][corpus]['splits'])
+	direction = data['direction']
+	splits = list(set(splits))
+	corpora = get_pairs(data, splits, direction)
+	mp(build_corpus , corpora)
 
 
 

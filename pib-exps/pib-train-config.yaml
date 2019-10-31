@@ -1,0 +1,40 @@
+corpora:
+    ilci:
+         splits: ['train', 'dev']
+         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
+    iitb-hi-en:
+         splits: ['train', 'dev']
+         langs: ['en', 'hi']
+    national-newscrawl:
+         splits: ['train']
+         langs: ['en', 'hi']
+    wat-ilmpc:
+         splits: ['train', 'dev']
+         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
+    ufal-en-tam:
+        splits: ['train', 'dev']
+        langs: ['en', 'ta']
+    bible-en-te:
+        splits: ['train', 'dev']
+        langs: ['en', 'te']
+    eenadu-en-te:
+        splits: ['train']
+        langs: ['en','te']
+    odiencorp:
+        splits: ['train', 'dev']
+        langs: ['en','or']
+    pib-v2:
+        splits: ['train']
+        langs: ['en', 'hi', 'ta', 'te', 'ml', 'bn', 'ur', 'gu', 'mr', 'pa', 'or']
+
+    # pib:
+    #     splits: ['train']
+    #     langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa', 'or']
+
+direction:
+    src: 'xx'
+    tgt: 'xx'
+
+dictionary:
+    src: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'
+    tgt: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'

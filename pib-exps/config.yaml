@@ -2,17 +2,15 @@ corpora:
     ilci:
         splits: ['train', 'test', 'dev']
         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
-        #langs: ['en', 'hi','ta', 'te']
     #wat-ilmpc:
     #     splits: ['dev']
     #     langs: ['en', 'ta']
-    #iitb-hi-en:
-    #     splits: ['train', 'dev', 'test']
-    #     langs: ['en', 'hi']
+    iitb-hi-en:
+         splits: ['train', 'dev', 'test']
+         langs: ['en', 'hi']
     #wat-ilmpc:
     #     splits: ['train', 'dev', 'test']
     #     langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
-         #langs: ['en', 'hi',  'ta', 'te']
     #national-newscrawl:
     #     splits: ['train']
     #     langs: ['en', 'hi']

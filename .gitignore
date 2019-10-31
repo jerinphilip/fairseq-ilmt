@@ -118,3 +118,14 @@ fairseq/modules/*_layer/*_backward.cu
 data-bin/
 
 *.sw[op]
+
+*.out
+
+out/
+pib-exps/output/
+pib-exps/*.yaml
+pib-exps/*.sh
+*.csv
+pib-exps/compare.py
+pib-exps/cross-domain.py
+pib-exps/diff.py
