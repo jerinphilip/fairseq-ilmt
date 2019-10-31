@@ -29,6 +29,10 @@ def collate(
     src_lengths, sort_order = src_lengths.sort(descending=True)
     id = id.index_select(0, sort_order)
     src_tokens = src_tokens.index_select(0, sort_order)
+    sort_ls = sort_order.tolist()
+
+    uids = [s['direction'] for s in samples]
+    sorted_uids = [uids[s] for s in sort_ls]
 
     prev_output_tokens = None
     target = None
@@ -58,6 +62,7 @@ def collate(
             'src_lengths': src_lengths,
         },
         'target': target,
+        'uid': sorted_uids,
     }
     if prev_output_tokens is not None:
         batch['net_input']['prev_output_tokens'] = prev_output_tokens
@@ -122,6 +127,12 @@ class LanguagePairDataset(FairseqDataset):
     def __getitem__(self, index):
         tgt_item = self.tgt[index] if self.tgt is not None else None
         src_item = self.src[index]
+
+        src_id = self.src.get_corpus_id(index)
+        tgt_id = self.tgt.get_corpus_id(index)
+
+        uid = src_id + tgt_id
+
         # Append EOS to end of tgt sentence if it does not have an EOS and remove
         # EOS from end of src sentence if it exists. This is useful when we use
         # use existing datasets for opposite directions i.e., when we want to
@@ -140,7 +151,9 @@ class LanguagePairDataset(FairseqDataset):
             'id': index,
             'source': src_item,
             'target': tgt_item,
+            'direction': uid,
         }
+
 
     def __len__(self):
         return len(self.src)

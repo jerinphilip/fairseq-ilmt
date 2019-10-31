@@ -48,8 +48,8 @@ def UFALEnTam_meta(split):
 
 @dataset_register('ilci', ['train', 'dev', 'test'])
 def ILCI_meta(split):
-    if split in ['dev', 'test']:
-        return []
+    #if split in ['dev', 'test']:
+    #    return []
     corpora = []
     langs = [
         'en', 'te', 'hi', 'ml', 
@@ -60,7 +60,7 @@ def ILCI_meta(split):
     from .utils import canonicalize
 
     for lang in langs:
-        sub_path = 'ilci/complete.{}'.format(lang)
+        sub_path = 'ilci/{}.{}'.format(split, lang)
         _lang = canonicalize(lang)
         corpus = Corpus('ilci', data_abspath(sub_path), _lang)
         corpora.append(corpus)
@@ -93,6 +93,15 @@ def EenaduBacktrans_meta(split):
     for lang in ['en','te']:
         sub_path = 'eenadu-en-te/train.{}'.format(lang)
         corpus = Corpus('eenadu-en-te', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
+@dataset_register('odiencorp', ['train', 'dev', 'test'])
+def OdiEnCorp_meta(split):
+    corpora = []
+    for lang in ['en', 'or']:
+        sub_path = 'odiencorp/{}.{}'.format(split, lang)
+        corpus = Corpus('odiencorp', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
 

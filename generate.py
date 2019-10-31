@@ -125,14 +125,18 @@ def main(args):
                         src_str = ""
                     if has_target:
                         target_str = tgt_dict.string(target_tokens, args.remove_bpe, escape_unk=True)
-
+                
+                corpus_id = sample['uid'][i]
+                entry_id = '{}-{}'.format(corpus_id, sample_id)
+                
                 if not args.quiet:
                     if src_dict is not None:
-                        print('S-{}\t{}'.format(sample_id, src_str))
+                        print('S-{}\t{}'.format(entry_id, src_str))
                     if has_target:
-                        print('T-{}\t{}'.format(sample_id, target_str))
+                        print('T-{}\t{}'.format(entry_id, target_str))
 
                 # Process top predictions
+
                 for j, hypo in enumerate(hypos[i][:args.nbest]):
                     hypo_tokens, hypo_str, alignment = utils.post_process_prediction(
                         hypo_tokens=hypo['tokens'].int().cpu(),
@@ -144,7 +148,7 @@ def main(args):
                     )
 
                     if not args.quiet:
-                        print('H-{}\t{}\t{}'.format(sample_id, hypo['score'], hypo_str))
+                        print('H-{}\t{}\t{}'.format(entry_id, hypo['score'], hypo_str))
                         print('P-{}\t{}'.format(
                             sample_id,
                             ' '.join(map(
@@ -155,7 +159,7 @@ def main(args):
 
                         if args.print_alignment:
                             print('A-{}\t{}'.format(
-                                sample_id,
+                                entry_id,
                                 ' '.join(map(lambda x: str(utils.item(x)), alignment))
                             ))
 

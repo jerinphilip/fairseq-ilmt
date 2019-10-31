@@ -14,9 +14,9 @@ def read_config(path):
     with open(path) as config:
         contents = config.read()
         data = yaml.load(contents)
+        print(data)
         return data
 
-#data = read_config(args.data)
 def build_corpus(corpus):
 	from ilmulti.sentencepiece import SentencePieceTokenizer
 	tokenizer = SentencePieceTokenizer()
@@ -40,21 +40,19 @@ def get_pairs(data):
 	
 	return list(set(corpora))
 
+def mp(build_corpus , corpora):
+	pool = Pool(processes=os.cpu_count())
+	pool.map_async(build_corpus , corpora)
+	pool.close()
+	pool.join()
 
 if __name__ == '__main__':
 	parser=ArgumentParser()
 	parser.add_argument('data')
 	args = parser.parse_args()
-	data = read_config(args.data)
-	#print(data) 
+	data = read_config(args.data) 
 	corpora=get_pairs(data)
-
-	# Create pool of processes eqvt to cores
-	# Parallel call build_corpus on corpora
-	pool = Pool(processes=os.cpu_count())
-	pool.map_async(build_corpus , corpora)
-	pool.close()
-	pool.join()
+	mp(build_corpus , corpora)
 
 
 

@@ -72,10 +72,15 @@ class LMDBCorpus:
     def __len__(self):
         return self.num_samples
 
+    @property   
+    def corpus_id(self):
+        corpus_id = self.corpus.path.replace('/','_')
+        return corpus_id
 
     def __getitem__(self, idx):
         _key = '{}'.format(idx)
         record = self._get_value(_key)
+        
         cached = deepcopy(record.decode('utf-8'))
         tokens = cached.split()
         return tokens

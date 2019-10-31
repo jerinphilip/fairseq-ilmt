@@ -118,3 +118,7 @@ fairseq/modules/*_layer/*_backward.cu
 data-bin/
 
 *.sw[op]
+
+*.out
+
+out/

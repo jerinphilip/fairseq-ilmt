@@ -25,7 +25,7 @@ class _CVITIndexedRawTextDataset:
                 self.lines.append(line)
                 _lang, tokens = tokenizer(line, lang=corpus.lang)
                 self.tokens_list.append(tokens)
-                self.sizes.append(len(tokens))
+                self.sizes.append(len(tokens)+1)
         self.sizes = np.array(self.sizes, dtype=np.int32)
         print("Loaded {}".format(corpus.path))
 
@@ -43,7 +43,13 @@ class CVITIndexedRawTextDataset(IndexedRawTextDataset):
         self.dataset = self._maybe_read(corpus, tokenizer)
         self.reverse_order = reverse_order
         self.append_eos = append_eos
-    
+        self.corpus = corpus
+        
+    @property   
+    def corpus_id(self):
+        corpus_id = self.corpus.path.replace('/','_')
+        return corpus_id
+
     def _maybe_read(self, corpus, tokenizer):
         path = corpus.path
         if path not in _flyweight:
