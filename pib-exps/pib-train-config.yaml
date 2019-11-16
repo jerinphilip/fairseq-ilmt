@@ -1,0 +1,32 @@
+corpora:
+    ilci:
+         splits: ['train','dev','test']
+         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
+    iitb-hi-en:
+         splits: ['train', 'dev', 'test']
+         langs: ['en', 'hi']
+    wat-ilmpc:
+         splits: ['train', 'dev', 'test']
+         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
+    national-newscrawl:
+         splits: ['train']
+         langs: ['en', 'hi']
+    ufal-en-tam:
+        splits: ['train', 'test', 'dev']
+        langs: ['en', 'ta']
+    bible-en-te:
+        splits: ['train', 'test', 'dev']
+        langs: ['en', 'te']
+    eenadu-en-te:
+        splits: ['train']
+        langs: ['en','te']
+    odiencorp:
+        splits: ['train', 'test', 'dev']
+        langs: ['en','or']
+    #pib:
+    #    splits: ['train']
+    #    langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
+
+dictionary:
+    src: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'
+    tgt: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'

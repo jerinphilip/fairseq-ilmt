@@ -37,6 +37,40 @@ def WAT_meta(split):
             corpora.append(corpus)
     return corpora
 
+@dataset_register('pib', ['train', 'dev', 'test'])
+def PIB_meta(split):
+    if split in ['dev', 'test']:
+        return []
+
+    corpora = []
+    langs = ['bn', 'hi', 'ml', 'ta', 'te', 'ur']
+    for lang in langs:
+        for src in [lang, 'en']:
+            sub_path = 'pib/en-{}/{}.{}'.format(
+                    lang, split, src
+            )
+            corpus_name = 'pib-{}-{}'.format(lang, 'en')
+            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
+            corpora.append(corpus)
+    return corpora
+
+@dataset_register('mkb', ['train', 'dev', 'test'])
+def MKB_meta(split):
+    if split in ['train', 'dev']:
+        return []
+
+    corpora = []
+    langs = ['bn', 'hi', 'ml', 'ta', 'te', 'ur']
+    for lang in langs:
+        for src in [lang, 'en']:
+            sub_path = 'mkb/en-{}/{}.{}'.format(
+                    lang, split, src
+            )
+            corpus_name = 'mkb-{}-{}'.format(lang, 'en')
+            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
+            corpora.append(corpus)
+    return corpora
+
 @dataset_register('ufal-en-tam', ['train', 'dev', 'test'])
 def UFALEnTam_meta(split):
     corpora = []
@@ -75,14 +109,6 @@ def BIBLEEnTe_meta(split):
         corpora.append(corpus)
     return corpora
 
-@dataset_register('mann-ki-baat-test', ['test'])
-def MannKiBaat_meta(split):
-    corpora = []
-    for lang in ['en','hi','ta','te']:
-        sub_path = 'mann-ki-baat-test/mkb.{}'.format(lang)
-        corpus = Corpus('mann-ki-baat-test', data_abspath(sub_path), lang)
-        corpora.append(corpus)
-    return corpora
 
 @dataset_register('eenadu-en-te', ['train'])
 def EenaduBacktrans_meta(split):

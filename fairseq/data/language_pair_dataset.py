@@ -131,7 +131,10 @@ class LanguagePairDataset(FairseqDataset):
         src_id = self.src.get_corpus_id(index)
         tgt_id = self.tgt.get_corpus_id(index)
 
-        uid = src_id + tgt_id
+        from fairseq.data.cvit.utils import canonicalize
+        src_id = canonicalize(src_id)
+        tgt_id = canonicalize(tgt_id)
+        uid = src_id + '_' + tgt_id
 
         # Append EOS to end of tgt sentence if it does not have an EOS and remove
         # EOS from end of src sentence if it exists. This is useful when we use

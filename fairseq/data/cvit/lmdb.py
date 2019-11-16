@@ -74,8 +74,9 @@ class LMDBCorpus:
 
     @property   
     def corpus_id(self):
-        corpus_id = self.corpus.path.replace('/','_')
-        return corpus_id
+        corpus_id = self.corpus.path.split('.')
+        #corpus_id = self.corpus.path.replace('/','_')
+        return corpus_id[1]
 
     def __getitem__(self, idx):
         _key = '{}'.format(idx)

@@ -64,7 +64,6 @@ def select(tags, splits, langs):
 
 
 def pairs_select(corpora_config, split):
-    #print(corpora_config, split)
     ls = []
     if split == 'valid': split = 'dev'
     for tag, v in corpora_config.items():

@@ -14,7 +14,6 @@ def read_config(path):
     with open(path) as config:
         contents = config.read()
         data = yaml.load(contents)
-        print(data)
         return data
 
 def build_corpus(corpus):
@@ -31,9 +30,8 @@ def build_corpus(corpus):
 
 def get_pairs(data):
 	corpora = []
-	for split in ['train','dev','test']:
-		pairs = pairs_select(data['corpora'], split) 
-		#print(pairs)
+	for split in ['train','test','dev']:
+		pairs = pairs_select(data['corpora'], split)
 		srcs,tgts = list(zip(*pairs))
 		corpora.extend(srcs)
 		corpora.extend(tgts)
@@ -50,8 +48,8 @@ if __name__ == '__main__':
 	parser=ArgumentParser()
 	parser.add_argument('data')
 	args = parser.parse_args()
-	data = read_config(args.data) 
-	corpora=get_pairs(data)
+	data = read_config(args.data)
+	corpora = get_pairs(data)
 	mp(build_corpus , corpora)
 
 

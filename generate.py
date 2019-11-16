@@ -127,13 +127,13 @@ def main(args):
                         target_str = tgt_dict.string(target_tokens, args.remove_bpe, escape_unk=True)
                 
                 corpus_id = sample['uid'][i]
-                entry_id = '{}-{}'.format(corpus_id, sample_id)
+                entry_id = '{}\t{}'.format(sample_id,corpus_id)
                 
                 if not args.quiet:
                     if src_dict is not None:
-                        print('S-{}\t{}'.format(entry_id, src_str))
+                        print('S\t{}\t{}'.format(entry_id, src_str))
                     if has_target:
-                        print('T-{}\t{}'.format(entry_id, target_str))
+                        print('T\t{}\t{}'.format(entry_id, target_str))
 
                 # Process top predictions
 
@@ -148,9 +148,9 @@ def main(args):
                     )
 
                     if not args.quiet:
-                        print('H-{}\t{}\t{}'.format(entry_id, hypo['score'], hypo_str))
-                        print('P-{}\t{}'.format(
-                            sample_id,
+                        print('H\t{}\t{}\t{}'.format(entry_id, hypo['score'], hypo_str))
+                        print('P\t{}\t{}'.format(
+                            entry_id,
                             ' '.join(map(
                                 lambda x: '{:.4f}'.format(x),
                                 hypo['positional_scores'].tolist(),
