@@ -1,21 +1,21 @@
 corpora:
     ilci:
-         splits: ['train','dev','test']
+         splits: ['test']
          langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
     iitb-hi-en:
-         splits: ['train','dev','test']
+         splits: ['test']
          langs: ['en', 'hi']
     wat-ilmpc:
-         splits: ['train', 'dev', 'test']
+         splits: ['test']
          langs: [ 'en', 'hi',  'ta', 'te', 'ml', 'ur', 'bn']
     ufal-en-tam:
-         splits: ['train', 'test', 'dev']
+         splits: ['test']
          langs: ['en', 'ta']
     bible-en-te:
-         splits: ['train', 'test', 'dev']
+         splits: ['test']
          langs: ['en', 'te']
     odiencorp:
-         splits: ['train', 'test', 'dev']
+         splits: ['test']
          langs: ['en','or']
     #mann-ki-baat-test:
         #splits: ['test']

@@ -15,12 +15,9 @@ module load pytorch/1.1.0
 
 IMPORTS=(
     filtered-iitb.tar
-    #ilci.tar
-    national-newscrawl.tar
-    ufal-en-tam.tar
     wat-ilmpc.tar
+    ufal-en-tam.tar
     bible-en-te.tar
-    eenadu-en-te.tar
     odiencorp.tar
 )
 
@@ -46,7 +43,7 @@ function copy {
 copy
 
 rsync -rvz /home/shashanks/ilci/ $DATA/ilci/
-rsync -rvz ada:/share1/shashanks/checkpoints/pib_all/checkpoint_best.pt $CHECKPOINTS/checkpoint_last.pt
+#rsync -rvz ada:/share1/shashanks/checkpoints/pib_all/iter0/checkpoint_best.pt $CHECKPOINTS/checkpoint_last.pt
 
 set -x
 
@@ -76,3 +73,5 @@ function _test {
 }
 
 _test
+
+    
