@@ -47,9 +47,9 @@ class CVITIndexedRawTextDataset(IndexedRawTextDataset):
         
     @property   
     def corpus_id(self):
-        corpus_id = self.corpus.path.split('.')
-        #corpus_id = self.corpus.path.replace('/','_')
-        return corpus_id[1]
+        lang = self.corpus.path.split('.')[1]
+        corpus_id = '{} {}'.format(self.corpus.tag,lang)
+        return corpus_id
 
     def _maybe_read(self, corpus, tokenizer):
         path = corpus.path
