@@ -27,14 +27,13 @@ def NationalNewscrawl_meta(split):
 @dataset_register('wat-ilmpc', ['train', 'dev', 'test'])
 def WAT_meta(split):
     corpora = []
-    langs = ['bn', 'hi', 'ml', 'si', 'ta', 'te', 'ur']
+    langs = ['bn', 'hi', 'ml', 'ta', 'te', 'ur']
     for lang in langs:
         for src in [lang, 'en']:
             sub_path = 'indic_languages_corpus/bilingual/{}-en/{}.{}'.format(
                     lang, split, src
             )
-            #corpus_name = 'wat-ilmpc-{}-{}'.format(lang, 'en')
-            corpus_name = 'wat-ilmpc'
+            corpus_name = 'wat-ilmpc-{}-{}'.format(lang, 'en')
             corpus = Corpus(corpus_name, data_abspath(sub_path), src)
             corpora.append(corpus)
     return corpora
