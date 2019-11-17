@@ -17,7 +17,7 @@ def read_config(path):
         data = yaml.load(contents)
         return data
 
-def get_langs(data):
+def get_corpus_langs(data):
     corpus_list = defaultdict(list)
     for corpus in data['corpora']:
         corpus_list[corpus] = data['corpora'][corpus]['langs']
@@ -47,8 +47,7 @@ def generate_pairs(ind, hyp, ref, out_dir):
             parallel_write(corpus_tag, src_lang, tgt_lang, hyp_line, ref_line, out_dir)
 
 
-def generate_grid(out_dir, corpus):
-    langs = ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'mr', 'gu', 'mr', 'pa', 'or']
+def generate_grid(out_dir, corpus, langs):
     data = defaultdict(float)
     for lang in langs:
         data[lang] = 0.00
@@ -66,7 +65,7 @@ def generate_grid(out_dir, corpus):
         except:
             df.at[i[0],i[1]] = 0
             pass            
-    df.to_csv('{}/grid/{}/{}_grid.csv'.format(out_dir, corpus, model))
+    df.to_csv('{}/{}/{}_grid.csv'.format(out_dir, corpus, model))
 
 
 def create_dir(out_dir, corpus):
@@ -89,13 +88,14 @@ if __name__ == '__main__':
     ref = open(args.ref,'r')
     out_dir = args.out_dir
     data = read_config(args.test_config)
-    corpora = get_langs(data)
+    corpora = get_corpus_langs(data)
     for corpus in corpora:
         create_dir(out_dir, corpus)
 
     generate_pairs(ind, hyp, ref, out_dir)
-    #for corpus in corpora:
-    #    generate_grid(out_dir, corpus)
+    for corpus in corpora:
+        langs = corpora[corpus]
+        generate_grid(out_dir, corpus, langs)
 
     
     
