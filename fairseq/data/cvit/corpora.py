@@ -19,7 +19,8 @@ def NationalNewscrawl_meta(split):
     corpora = []
     for lang in ['en', 'hi']:
         sub_path = 'national-newscrawl/national.{}'.format(lang)
-        corpus = Corpus('iitb-hi-en', data_abspath(sub_path), lang)
+        #corpus = Corpus('iitb-hi-en', data_abspath(sub_path), lang)
+        corpus = Corpus('national-newscrawl', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
 
@@ -32,7 +33,8 @@ def WAT_meta(split):
             sub_path = 'indic_languages_corpus/bilingual/{}-en/{}.{}'.format(
                     lang, split, src
             )
-            corpus_name = 'wat-ilmpc-{}-{}'.format(lang, 'en')
+            #corpus_name = 'wat-ilmpc-{}-{}'.format(lang, 'en')
+            corpus_name = 'wat-ilmpc'
             corpus = Corpus(corpus_name, data_abspath(sub_path), src)
             corpora.append(corpus)
     return corpora
@@ -75,7 +77,7 @@ def MKB_meta(split):
 def UFALEnTam_meta(split):
     corpora = []
     for lang in ['en', 'ta']:
-        sub_path = 'ufal-en-tam/corpus.bcn.{}.{}'.format(split, lang)
+        sub_path = 'ufal-en-tam/{}.{}'.format(split, lang)
         corpus = Corpus('ufal-en-tam', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
@@ -104,7 +106,7 @@ def ILCI_meta(split):
 def BIBLEEnTe_meta(split):
     corpora = []
     for lang in ['en', 'te']:
-        sub_path = 'bible-en-te/bible.{}.{}'.format(split, lang)
+        sub_path = 'bible-en-te/{}.{}'.format(split, lang)
         corpus = Corpus('bible-en-te', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
