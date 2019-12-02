@@ -28,9 +28,9 @@ def build_corpus(corpus):
 		print("Built LMDB({})".format(corpus.path))
 
 
-def get_pairs(data):
+def get_pairs(data, splits):
 	corpora = []
-	for split in ['train','test','dev']:
+	for split in splits:
 		pairs = pairs_select(data['corpora'], split)
 		srcs,tgts = list(zip(*pairs))
 		corpora.extend(srcs)
@@ -48,8 +48,12 @@ if __name__ == '__main__':
 	parser=ArgumentParser()
 	parser.add_argument('data')
 	args = parser.parse_args()
+	splits = []
 	data = read_config(args.data)
-	corpora = get_pairs(data)
+	for corpus in data['corpora']:
+		splits.extend(data['corpora'][corpus]['splits'])
+	splits = list(set(splits))
+	corpora = get_pairs(data, splits)
 	mp(build_corpus , corpora)
 
 

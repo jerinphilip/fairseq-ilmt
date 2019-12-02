@@ -1,6 +1,7 @@
 from . import DATASET_REGISTRY
 from . import dataset_register, data_abspath
 from . import Corpus, sanity_check
+from itertools import permutations, combinations
 
 
 @dataset_register('iitb-hi-en', ['train', 'dev', 'test'])
@@ -44,15 +45,17 @@ def PIB_meta(split):
         return []
 
     corpora = []
-    langs = ['bn', 'hi', 'ml', 'ta', 'te', 'ur']
-    for lang in langs:
-        for src in [lang, 'en']:
-            sub_path = 'pib/en-{}/{}.{}'.format(
-                    lang, split, src
-            )
-            corpus_name = 'pib-{}-{}'.format(lang, 'en')
-            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
-            corpora.append(corpus)
+    langs = ['hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa', 'or', 'en']
+    langs = sorted(langs)
+    perm = combinations(langs, 2)
+    for src, tgt in list(perm):
+        for lang in [src, tgt]:
+                sub_path = 'pib/{}-{}/{}.{}'.format(
+                        src, tgt, 'train', lang
+                )
+                corpus_name = 'pib-{}-{}'.format(src, tgt)
+                corpus = Corpus(corpus_name, data_abspath(sub_path), lang)
+                corpora.append(corpus)
     return corpora
 
 @dataset_register('mkb', ['train', 'dev', 'test'])
@@ -61,15 +64,17 @@ def MKB_meta(split):
         return []
 
     corpora = []
-    langs = ['bn', 'hi', 'ml', 'ta', 'te', 'ur']
-    for lang in langs:
-        for src in [lang, 'en']:
-            sub_path = 'mkb/en-{}/{}.{}'.format(
-                    lang, split, src
-            )
-            corpus_name = 'mkb-{}-{}'.format(lang, 'en')
-            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
-            corpora.append(corpus)
+    langs = ['ml', 'ur', 'te', 'hi', 'ta', 'bn', 'gu', 'or', 'mr', 'en']
+    langs = sorted(langs)
+    perm = combinations(langs, 2)
+    for src, tgt in list(perm):
+        for lang in [src, tgt]:
+                sub_path = 'mkb/{}-{}/{}.{}'.format(
+                        src, tgt, 'mkb', lang
+                )
+                corpus_name = 'mkb-{}-{}'.format(src, tgt)
+                corpus = Corpus(corpus_name, data_abspath(sub_path), lang)
+                corpora.append(corpus)
     return corpora
 
 @dataset_register('ufal-en-tam', ['train', 'dev', 'test'])
