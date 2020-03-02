@@ -24,7 +24,6 @@ def load_langpair_dataset(
     left_pad_source, left_pad_target, max_source_positions, max_target_positions,
 ):
     # Load everything from config file
-    #print(corpus_pairs)
     src_datasets, tgt_datasets = [], []
     for pair in corpus_pairs:
         src, tgt = pair

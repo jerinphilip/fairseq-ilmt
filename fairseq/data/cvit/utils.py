@@ -1,5 +1,5 @@
 from collections import defaultdict
-from itertools import combinations
+from itertools import combinations, permutations
 from . import DATASET_REGISTRY
 
 def canonicalize(langcode):
@@ -56,7 +56,7 @@ def select(tags, splits, langs):
     #print(corpora)
     for key in corpora:
         # TODO(jerin): Sort for determinism
-        for dx, dy in combinations(corpora[key], 2):
+        for dx, dy in permutations(corpora[key], 2):
             pairs.append((dx, dy))
 
 

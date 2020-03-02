@@ -47,7 +47,8 @@ class CVITIndexedRawTextDataset(IndexedRawTextDataset):
         
     @property   
     def corpus_id(self):
-        lang = self.corpus.path.split('.')[1]
+        #assuming corpus_name.split.lang
+        lang = self.corpus.path.split('.')[-1]
         corpus_id = '{} {}'.format(self.corpus.tag,lang)
         return corpus_id
 

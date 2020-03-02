@@ -1,10 +1,10 @@
 corpora:
-    ilci:
-         splits: ['test']
-         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
     iitb-hi-en:
          splits: ['test']
          langs: ['en', 'hi']
+    ilci:
+         splits: ['test']
+         langs: [ 'en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa']
     wat-ilmpc:
          splits: ['test']
          langs: [ 'en', 'hi',  'ta', 'te', 'ml', 'ur', 'bn']
@@ -17,17 +17,13 @@ corpora:
     odiencorp:
          splits: ['test']
          langs: ['en','or']
-    #mann-ki-baat-test:
-        #splits: ['test']
-        #langs: ['en', 'hi',  'ta', 'te']
-    #mkb:
-    #    splits: ['test']
-    #    langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
+    mkb:
+        splits: ['test']
+        langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'or']
+    # pib-test:
+    #     splits: ['test']
+    #     langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa', 'or']
 
-
-#dictionary:
-#    src: '/home/shashanks/ilmulti/extras/central.dict'
-#    tgt: '/home/shashanks/ilmulti/extras/central.dict'
 
 dictionary:
     src: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'

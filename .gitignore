@@ -123,4 +123,9 @@ data-bin/
 
 out/
 pib-exps/output/
-
+pib-exps/*.yaml
+pib-exps/*.sh
+*.csv
+pib-exps/compare.py
+pib-exps/cross-domain.py
+pib-exps/diff.py

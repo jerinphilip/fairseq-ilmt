@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=pib-train-all
+#SBATCH --job-name=pib-iter1-branch
 #SBATCH --partition long
 #SBATCH --account shashanks
 #SBATCH --gres=gpu:4
 #SBATCH --nodes=1
 #SBATCH --mem=45G
-#SBATCH --time 3-00:00:00
-#SBATCH --signal=B:HUP@600
-#SBATCH --reservation non-deadline-queue
-#SBATCH -w gnode18
+#SBATCH --time 2-00:00:00
+#SBATCH --signal=B:HUP@1000
+##SBATCH --reservation non-deadline-queue
+##SBATCH -w gnode18
 
 module add use.own
 module load python/3.7.0
@@ -17,11 +17,8 @@ module load pytorch/1.1.0
 
 IMPORTS=(
     filtered-iitb.tar
-    #ilci.tar
     national-newscrawl.tar
-    ufal-en-tam.tar
     wat-ilmpc.tar
-    bible-en-te.tar
     eenadu-en-te.tar
     odiencorp.tar
 )
@@ -31,15 +28,21 @@ LOCAL_ROOT="/ssd_scratch/cvit/$USER"
 REMOTE_ROOT="ada:/share1/dataset/text"
 
 
+
 DATA=$LOCAL_ROOT/data
 CHECKPOINTS=$LOCAL_ROOT/checkpoints
 FSEQ=/home/shashanks/fairseq-cvit
 PIB=$FSEQ/pib-exps
 
+rm -r $LOCAL_ROOT/{data,checkpoints}
+
 mkdir -p $LOCAL_ROOT/{data,checkpoints}
 
-#rsync -rvz /home/shashanks/ilci/ $DATA/ilci/
-##rsync -rvz ada:/share1/shashanks/checkpoints/pib_all/checkpoint_last.pt $CHECKPOINTS/checkpoint_last.pt
+rsync -rvz /home/shashanks/ilci/ $DATA/ilci/
+#rsync -rvz /home/shashanks/pib/ $DATA/pib/
+rsync -rvz /home/shashanks/bible-en-te/ $DATA/bible-en-te/
+rsync -rvz /home/shashanks/ufal-en-tam/ $DATA/ufal-en-tam/
+rsync -rvz ada:/share1/shashanks/checkpoints/pib_all/iter0/checkpoint_last.pt $CHECKPOINTS/checkpoint_last.pt
 
 set -x
 
@@ -53,14 +56,14 @@ function copy {
 
 
 function _export {
-    ssh $USER@ada "mkdir -p ada:/share1/shashanks/checkpoints/pib_all"
-    rsync -rvz $CHECKPOINTS/*.pt ada:/share1/$USER/checkpoints/pib_all/
+    ssh $USER@ada "mkdir -p ada:/share1/shashanks/checkpoints/pib_all/iter0/branch"
+    rsync -rvz $CHECKPOINTS/*.pt ada:/share1/$USER/checkpoints/pib_all/iter0/branch/
 }
 
 trap "_export" SIGHUP
 export ILMULTI_CORPUS_ROOT=$DATA
 
-#copy
+copy
 
 python3 $FSEQ/preprocess_cvit.py $PIB/pib-train-config.yaml
 
@@ -88,9 +91,7 @@ python3 $FSEQ/train.py \
     --update-freq $UPDATE_FREQ \
     --max-epoch $MAX_EPOCHS \
     --criterion label_smoothed_cross_entropy \
-    --save-interval-updates 1000 \
-    --reset-optimizer \
-    --reset-lr-scheduler \
+    --save-interval-updates 10000 \
     $PIB/pib-train-config.yaml &
 
 wait

@@ -39,6 +39,22 @@ def WAT_meta(split):
             corpora.append(corpus)
     return corpora
 
+@dataset_register('pib-test', ['test'])
+def PIBTEST_meta(split):
+    corpora = []
+    langs = ['hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa', 'or']
+    for lang in langs:
+        fst, snd = sorted([lang, 'en'])
+        dirname = '{}-{}'.format(fst, snd)
+        for src in [lang, 'en']:
+                sub_path = 'pib-test/{}/{}.{}'.format(
+                        dirname, split, src
+                )
+                corpus_name = 'pib-test-{}-{}'.format(lang, 'en')
+                corpus = Corpus(corpus_name, data_abspath(sub_path), src)
+                corpora.append(corpus)
+    return corpora
+
 @dataset_register('pib', ['train', 'dev', 'test'])
 def PIB_meta(split):
     if split in ['dev', 'test']:
@@ -81,7 +97,7 @@ def MKB_meta(split):
 def UFALEnTam_meta(split):
     corpora = []
     for lang in ['en', 'ta']:
-        sub_path = 'ufal-en-tam/{}.{}'.format(split, lang)
+        sub_path = 'ufal-en-tam/{}.{}.{}'.format('corpus.bcn', split, lang)
         corpus = Corpus('ufal-en-tam', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
@@ -110,7 +126,7 @@ def ILCI_meta(split):
 def BIBLEEnTe_meta(split):
     corpora = []
     for lang in ['en', 'te']:
-        sub_path = 'bible-en-te/{}.{}'.format(split, lang)
+        sub_path = 'bible-en-te/{}.{}.{}'.format('bible', split, lang)
         corpus = Corpus('bible-en-te', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora

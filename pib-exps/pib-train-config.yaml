@@ -23,9 +23,9 @@ corpora:
     odiencorp:
         splits: ['train', 'test', 'dev']
         langs: ['en','or']
-    #pib:
-    #    splits: ['train']
-    #    langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn']
+    pib:
+        splits: ['train']
+        langs: ['en', 'hi', 'ta', 'te', 'ml', 'ur', 'bn', 'gu', 'mr', 'pa', 'or']
 
 dictionary:
     src: '/home/shashanks/ilmulti/ilmulti/sentencepiece/central.dict'

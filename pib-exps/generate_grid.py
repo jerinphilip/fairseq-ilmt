@@ -9,7 +9,7 @@ from argparse import Namespace
 import pandas as pd
 import os
 
-model = 'm0'
+model = 'm1'
 
 def read_config(path):
     with open(path) as config:
@@ -30,8 +30,14 @@ def parallel_write(corpus, src_lang, tgt_lang, hyp, ref, out_dir):
     print(ref,file=out_ref)
 
 
-
 def generate_pairs(ind, hyp, ref, out_dir):
+    def canonicalize_corpus_tag(corpus):
+        corpus_tag = {'wat-ilmpc':'wat-ilmpc', 'mkb':'mkb', 'pib-test':'pib-test'}
+        for name in corpus_tag:
+            if name in corpus:
+                return corpus_tag[name]
+        return corpus
+
     for ind, hyp, ref in tqdm(zip(ind, hyp, ref)):           
         ind = ind.split('\n')[0]
         corpus_tag = ind.split()[0]
@@ -40,17 +46,14 @@ def generate_pairs(ind, hyp, ref, out_dir):
         src_lang, tgt_lang = direction[0], direction[1]
         hyp_line = hyp.split('\n')[0]
         ref_line = ref.split('\n')[0]
-        if 'wat-ilmpc' not in corpus_tag:
-            parallel_write(corpus_tag, src_lang, tgt_lang, hyp_line, ref_line, out_dir)
-        else:
-            corpus_tag = 'wat-ilmpc'
-            parallel_write(corpus_tag, src_lang, tgt_lang, hyp_line, ref_line, out_dir)
+        corpus_tag = canonicalize_corpus_tag(corpus_tag)
+        parallel_write(corpus_tag, src_lang, tgt_lang, hyp_line, ref_line, out_dir)
 
 
 def generate_grid(out_dir, corpus, langs):
     data = defaultdict(float)
-    for lang in langs:
-        data[lang] = 0.00
+    # for lang in langs:
+    #     data[lang] = 0.00
 
     df = pd.DataFrame(data, index = langs)
     perm = permutations(langs, 2) 
