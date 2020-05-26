@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import combinations, permutations
 from . import DATASET_REGISTRY
+import pprint
 
 def canonicalize(langcode):
     _variations = {

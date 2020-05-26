@@ -26,6 +26,7 @@ def load_langpair_dataset(
     # Load everything from config file
     src_datasets, tgt_datasets = [], []
     for pair in corpus_pairs:
+        print(pair)
         src, tgt = pair
 
         def wrapped(left, right):
@@ -38,13 +39,16 @@ def load_langpair_dataset(
         src_datasets.append(x)
         tgt_datasets.append(y)
 
-        # src -> tgt
-        x, y = wrapped(tgt, src)
-        src_datasets.append(x)
-        tgt_datasets.append(y)
+        # # src -> tgt
+        # x, y = wrapped(tgt, src)
+        # src_datasets.append(x)
+        # tgt_datasets.append(y)
 
     if len(src_datasets) == 1:
         src_dataset, tgt_dataset = src_datasets[0], tgt_datasets[0]
+        sample_ratios = [1] * len(src_datasets)
+        src_dataset = ConcatDataset(src_datasets, sample_ratios)
+        tgt_dataset = ConcatDataset(tgt_datasets, sample_ratios)
 
     else:
         sample_ratios = [1] * len(src_datasets)

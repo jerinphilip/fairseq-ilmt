@@ -1,14 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=pib-iter1-branch
-#SBATCH --partition long
+#SBATCH --job-name=pib-iter1-branch-toEN
+#SBATCH --partition short
 #SBATCH --account shashanks
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:1
 #SBATCH --nodes=1
-#SBATCH --mem=45G
-#SBATCH --time 2-00:00:00
+#SBATCH --mem=20G
+#SBATCH --time 0-06:00:00
 #SBATCH --signal=B:HUP@1000
-##SBATCH --reservation non-deadline-queue
-##SBATCH -w gnode18
+#SBATCH -w gnode41
 
 module add use.own
 module load python/3.7.0
@@ -16,35 +15,33 @@ module load pytorch/1.1.0
 
 
 IMPORTS=(
+    ilci-split.tar
     filtered-iitb.tar
     national-newscrawl.tar
     wat-ilmpc.tar
+    ufal-en-tam.tar
+    bible-en-te.tar
     eenadu-en-te.tar
     odiencorp.tar
+    pib-v0.tar
 )
-
 
 LOCAL_ROOT="/ssd_scratch/cvit/$USER"
 REMOTE_ROOT="ada:/share1/dataset/text"
-
-
 
 DATA=$LOCAL_ROOT/data
 CHECKPOINTS=$LOCAL_ROOT/checkpoints
 FSEQ=/home/shashanks/fairseq-cvit
 PIB=$FSEQ/pib-exps
+CONFIG=$PIB/pib-train-config.yaml
 
-rm -r $LOCAL_ROOT/{data,checkpoints}
+#rm -r $LOCAL_ROOT/{data,checkpoints}
 
 mkdir -p $LOCAL_ROOT/{data,checkpoints}
 
-rsync -rvz /home/shashanks/ilci/ $DATA/ilci/
-#rsync -rvz /home/shashanks/pib/ $DATA/pib/
-rsync -rvz /home/shashanks/bible-en-te/ $DATA/bible-en-te/
-rsync -rvz /home/shashanks/ufal-en-tam/ $DATA/ufal-en-tam/
-rsync -rvz ada:/share1/shashanks/checkpoints/pib_all/iter0/checkpoint_last.pt $CHECKPOINTS/checkpoint_last.pt
-
 set -x
+
+rsync -rvz ada:/share3/shashanks/checkpoints/pib_all/iter1/toEN/checkpoint_last.pt $CHECKPOINTS/checkpoint_last.pt
 
 function copy {
     for IMPORT in ${IMPORTS[@]}; do
@@ -56,17 +53,16 @@ function copy {
 
 
 function _export {
-    ssh $USER@ada "mkdir -p ada:/share1/shashanks/checkpoints/pib_all/iter0/branch"
-    rsync -rvz $CHECKPOINTS/*.pt ada:/share1/$USER/checkpoints/pib_all/iter0/branch/
+    ssh $USER@ada "mkdir -p ada:/share3/shashanks/checkpoints/pib_all/iter1/toEN/"
+    rsync -rvz $CHECKPOINTS/*.pt ada:/share3/$USER/checkpoints/pib_all/iter1/toEN/
 }
 
 trap "_export" SIGHUP
 export ILMULTI_CORPUS_ROOT=$DATA
 
-copy
+#copy
 
-python3 $FSEQ/preprocess_cvit.py $PIB/pib-train-config.yaml
-
+#python3 $FSEQ/preprocess_cvit.py $CONFIG
 
 ARCH='transformer'
 MAX_TOKENS=3500
@@ -74,26 +70,34 @@ LR=1e-3
 UPDATE_FREQ=1
 MAX_EPOCHS=50
 
-
 python3 $FSEQ/train.py \
-    --task shared-multilingual-translation \
-    --share-all-embeddings \
     --num-workers 0 \
-    --arch $ARCH \
+    --task shared-multilingual-translation \
+    --arch $ARCH --save-dir $CHECKPOINTS \
+    --share-all-embeddings \
+    --encoder-normalize-before --decoder-normalize-before \
+    --dropout 0.1 --attention-dropout 0.1 --activation-dropout 0.1 \
+    --label-smoothing 0.2 --criterion label_smoothed_cross_entropy\
     --max-tokens $MAX_TOKENS --lr $LR --min-lr 1e-9 \
     --optimizer adam --adam-betas '(0.9, 0.98)' \
-    --save-dir $CHECKPOINTS \
     --log-format simple --log-interval 200 \
-    --dropout 0.1 --attention-dropout 0.1 --activation-dropout 0.1 \
     --lr-scheduler inverse_sqrt \
-    --clip-norm 0.1 \
+    --clip-norm 0 --weight-decay 0.0001 \
     --ddp-backend no_c10d \
     --update-freq $UPDATE_FREQ \
     --max-epoch $MAX_EPOCHS \
-    --criterion label_smoothed_cross_entropy \
-    --save-interval-updates 10000 \
-    $PIB/pib-train-config.yaml &
+    --save-interval-updates 20000 \
+    $CONFIG &
 
 wait
 
 _export
+
+# --save-interval-updates 10000 \
+# --dropout 0.4 --attention-dropout 0.2 --activation-dropout 0.2 \
+    
+
+
+
+
+    
