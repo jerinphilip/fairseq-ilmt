@@ -26,7 +26,6 @@ def load_langpair_dataset(
     # Load everything from config file
     src_datasets, tgt_datasets = [], []
     for pair in corpus_pairs:
-        print(pair)
         src, tgt = pair
 
         def wrapped(left, right):
