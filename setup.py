@@ -50,6 +50,7 @@ setup(
         'sacrebleu',
         'torch',
         'tqdm',
+        'lmdb',
     ],
     packages=find_packages(exclude=['scripts', 'tests']),
     ext_modules=[bleu],
