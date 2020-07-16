@@ -177,7 +177,7 @@ class CVITTranslationTask(FairseqTask):
         # assert len(paths) > 0
         # data_path = paths[epoch % len(paths)]
         from fairseq.data.cvit.utils import pairs_select
-        pairs = pairs_select(self.data['corpora'], split)
+        pairs = pairs_select(self.data['corpora'], split, self.data['direction'])
 
         # infer langcode
         src, tgt = self.args.source_lang, self.args.target_lang

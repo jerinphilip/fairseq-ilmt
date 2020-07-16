@@ -183,27 +183,52 @@ def EenaduBacktrans_meta(split):
         corpora.append(corpus)
     return corpora
 
-@dataset_register('newstest2019guen', ['test'])
-def Newstest2019guen_meta(split):
-    if split in ['train', 'dev']:
+@dataset_register('newstest2019guen', ['train', 'dev', 'test'])
+def NewsTest2019guen_meta(split):
+    if split in ['train']:
         return []
 
     corpora = []
     for lang in ['en','gu']:
-        sub_path = 'newstest2019guen/test.{}'.format(lang)
+        sub_path = 'newstest2019guen/{}.{}'.format(split, lang)
         corpus = Corpus('newstest2019guen', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
 
-@dataset_register('newstest2019engu', ['test'])
-def Newstest2019engu_meta(split):
-    if split in ['train', 'dev']:
+@dataset_register('newstest2020taen', ['train', 'dev', 'test'])
+def NewsTest2020taen_meta(split):
+    if split in ['train']:
+        return []
+
+    corpora = []
+    for lang in ['en','ta']:
+        sub_path = 'newstest2020taen/{}.{}'.format(split, lang)
+        corpus = Corpus('newstest2020taen', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
+
+@dataset_register('newstest2019engu', ['train', 'dev', 'test'])
+def NewsTest2019engu_meta(split):
+    if split in ['train']:
         return []
 
     corpora = []
     for lang in ['en','gu']:
-        sub_path = 'newstest2019engu/test.{}'.format(lang)
+        sub_path = 'newstest2019engu/{}.{}'.format(split, lang)
         corpus = Corpus('newstest2019engu', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
+@dataset_register('newstest2020enta', ['train', 'dev', 'test'])
+def NewsTest2020enta_meta(split):
+    if split in ['train']:
+        return []
+
+    corpora = []
+    for lang in ['en','ta']:
+        sub_path = 'newstest2020enta/{}.{}'.format(split, lang)
+        corpus = Corpus('newstest2020enta', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
 
