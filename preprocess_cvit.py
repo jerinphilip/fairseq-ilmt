@@ -6,6 +6,7 @@ import yaml
 from multiprocessing import Pool
 import os
 from pprint import pprint
+from ilmulti.sentencepiece import build_tokenizer
 
 def add_args(parser):
 	parser.add_argument('data', help='colon separated path to data directories list, \
@@ -18,8 +19,8 @@ def read_config(path):
         return data
 
 def build_corpus(corpus):
-	from ilmulti.sentencepiece import SentencePieceTokenizer
-	tokenizer = SentencePieceTokenizer()
+	#from ilmulti.sentencepiece import SentencePieceTokenizer
+	#tokenizer = SentencePieceTokenizer()
 	if not LMDBCorpus.exists(corpus):
 		print("LMDB({}) does not exist. Building".format(corpus.path))
 		raw_dataset = _CVITIndexedRawTextDataset(corpus, tokenizer)
@@ -54,8 +55,10 @@ if __name__ == '__main__':
 	for corpus in data['corpora']:
 		splits.extend(data['corpora'][corpus]['splits'])
 	direction = data['direction']
+	tokenizer_tag = data['tokenizer']
 	splits = list(set(splits))
 	corpora = get_pairs(data, splits, direction)
+	tokenizer = build_tokenizer(tokenizer_tag)
 	mp(build_corpus , corpora)
 
 

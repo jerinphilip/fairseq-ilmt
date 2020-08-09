@@ -182,8 +182,8 @@ class CVITTranslationTask(FairseqTask):
         # infer langcode
         src, tgt = self.args.source_lang, self.args.target_lang
 
-        from ilmulti.sentencepiece import SentencePieceTokenizer
-        tokenizer = SentencePieceTokenizer()
+        from ilmulti.sentencepiece import build_tokenizer
+        tokenizer = build_tokenizer(self.data['tokenizer'])
 
         self.datasets[split] = load_langpair_dataset(pairs, self.src_dict, tokenizer,
             combine=combine, dataset_impl=self.args.dataset_impl,

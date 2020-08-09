@@ -93,8 +93,8 @@ def PIBV2_meta(split):
                 corpora.append(corpus)
     return corpora
 
-@dataset_register('pib-v2', ['train', 'dev', 'test'])
-def PIBV2_meta(split):
+@dataset_register('pib-v0.2', ['train', 'dev', 'test'])
+def PIBV02_meta(split):
     if split in ['dev', 'test']:
         return []
 
@@ -104,15 +104,15 @@ def PIBV2_meta(split):
     perm = combinations(langs, 2)
     for src, tgt in list(perm):
         for lang in [src, tgt]:
-                sub_path = 'pib-v2/{}-{}/{}.{}'.format(
+                sub_path = 'pib-v0.2/{}-{}/{}.{}'.format(
                         src, tgt, 'train', lang
                 )
-                corpus_name = 'pib-v2-{}-{}'.format(src, tgt)
+                corpus_name = 'pib-v0.2-{}-{}'.format(src, tgt)
                 corpus = Corpus(corpus_name, data_abspath(sub_path), lang)
                 corpora.append(corpus)
     return corpora
 
-@dataset_register('mkb', ['train', 'dev', 'test'])
+@dataset_register('mkb-v0', ['train', 'dev', 'test'])
 def MKB_meta(split):
     if split in ['train', 'dev']:
         return []
@@ -126,9 +126,44 @@ def MKB_meta(split):
                 sub_path = 'mkb/{}-{}/{}.{}'.format(
                         src, tgt, 'mkb', lang
                 )
-                corpus_name = 'mkb-{}-{}'.format(src, tgt)
+                corpus_name = 'mkb-v0-{}-{}'.format(src, tgt)
                 corpus = Corpus(corpus_name, data_abspath(sub_path), lang)
                 corpora.append(corpus)
+    return corpora
+
+
+@dataset_register('wat-mkb-dev', ['train', 'dev', 'test'])
+def WAT_MKB_DEV(split):
+    if split in ['train']:
+        return []
+
+    corpora = []
+    langs = ['bn', 'gu', 'hi', 'ml', 'mr', 'ta', 'te']
+    for lang in langs:
+        for src in [lang, 'en']:
+            sub_path = 'wat-mkb-dev/{}.{}-en.{}'.format(
+                    split, lang, src
+            )
+            corpus_name = 'wat-mkb-dev-{}-{}'.format(lang, 'en')
+            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
+            corpora.append(corpus)
+    return corpora
+
+@dataset_register('wat-mkb-test', ['train', 'dev', 'test'])
+def WAT_MKB_TEST(split):
+    if split in ['train', 'dev']:
+        return []
+
+    corpora = []
+    langs = ['bn', 'gu', 'hi', 'ml', 'mr', 'ta', 'te']
+    for lang in langs:
+        for src in [lang, 'en']:
+            sub_path = 'wat-mkb-test/{}.{}-en.{}'.format(
+                    split, lang, src
+            )
+            corpus_name = 'wat-mkb-test-{}-{}'.format(lang, 'en')
+            corpus = Corpus(corpus_name, data_abspath(sub_path), src)
+            corpora.append(corpus)
     return corpora
 
 @dataset_register('ufal-en-tam', ['train', 'dev', 'test'])
@@ -183,9 +218,19 @@ def EenaduBacktrans_meta(split):
         corpora.append(corpus)
     return corpora
 
+@dataset_register('odiencorp', ['train', 'dev', 'test'])
+def OdiEnCorp_meta(split):
+    corpora = []
+    for lang in ['en', 'or']:
+        sub_path = 'odiencorp/{}.{}'.format(split, lang)
+        corpus = Corpus('odiencorp', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
+
 @dataset_register('newstest2019guen', ['train', 'dev', 'test'])
 def NewsTest2019guen_meta(split):
-    if split in ['train']:
+    if split in ['train', 'dev']:
         return []
 
     corpora = []
@@ -195,22 +240,9 @@ def NewsTest2019guen_meta(split):
         corpora.append(corpus)
     return corpora
 
-@dataset_register('newstest2020taen', ['train', 'dev', 'test'])
-def NewsTest2020taen_meta(split):
-    if split in ['train']:
-        return []
-
-    corpora = []
-    for lang in ['en','ta']:
-        sub_path = 'newstest2020taen/{}.{}'.format(split, lang)
-        corpus = Corpus('newstest2020taen', data_abspath(sub_path), lang)
-        corpora.append(corpus)
-    return corpora
-
-
 @dataset_register('newstest2019engu', ['train', 'dev', 'test'])
 def NewsTest2019engu_meta(split):
-    if split in ['train']:
+    if split in ['train', 'dev']:
         return []
 
     corpora = []
@@ -220,9 +252,21 @@ def NewsTest2019engu_meta(split):
         corpora.append(corpus)
     return corpora
 
+@dataset_register('newstest2020taen', ['train', 'dev', 'test'])
+def NewsTest2020taen_meta(split):
+    if split in ['train', 'dev']:
+        return []
+
+    corpora = []
+    for lang in ['en','ta']:
+        sub_path = 'newstest2020taen/{}.{}'.format(split, lang)
+        corpus = Corpus('newstest2020taen', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
 @dataset_register('newstest2020enta', ['train', 'dev', 'test'])
 def NewsTest2020enta_meta(split):
-    if split in ['train']:
+    if split in ['train', 'dev']:
         return []
 
     corpora = []
@@ -232,14 +276,32 @@ def NewsTest2020enta_meta(split):
         corpora.append(corpus)
     return corpora
 
-@dataset_register('odiencorp', ['train', 'dev', 'test'])
-def OdiEnCorp_meta(split):
+@dataset_register('newsdev2019', ['train', 'dev', 'test'])
+def NewsDev2019_meta(split):
+    if split in ['train']:
+        return []
+
     corpora = []
-    for lang in ['en', 'or']:
-        sub_path = 'odiencorp/{}.{}'.format(split, lang)
-        corpus = Corpus('odiencorp', data_abspath(sub_path), lang)
+    langs = ['en', 'gu']
+    for lang in langs:
+        sub_path = 'newsdev2019/{}.{}'.format(split, lang)
+        corpus = Corpus('newsdev2019', data_abspath(sub_path), lang)
         corpora.append(corpus)
     return corpora
+
+@dataset_register('newsdev2020', ['train', 'dev', 'test'])
+def NewsDev2020_meta(split):
+    if split in ['train']:
+        return []
+
+    corpora = []
+    langs = ['en','ta']
+    for lang in langs:
+        sub_path = 'newsdev2020/{}.{}'.format(split, lang)
+        corpus = Corpus('newsdev2020', data_abspath(sub_path), lang)
+        corpora.append(corpus)
+    return corpora
+
 
 if __name__ == '__main__':
     def merge(*_as):
