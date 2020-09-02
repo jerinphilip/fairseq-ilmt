@@ -1,11 +1,14 @@
 from collections import defaultdict
-from itertools import combinations
+from itertools import combinations, permutations
 from . import DATASET_REGISTRY
+import pprint
 
 def canonicalize(langcode):
     _variations = {
         "ur": ["ur", "ud"],
-        "bn": ["bg", "bn"]
+        "bn": ["bg", "bn"],
+        "gu": ["gu", "gj"],
+        "pa": ["pa", "pj"]
     }
 
     inverse = {}
@@ -15,7 +18,7 @@ def canonicalize(langcode):
 
     return inverse.get(langcode, langcode)
 
-def select(tags, splits, langs):
+def select(tags, splits, langs, direction):
     """
     """
     # Filter by split, langs
@@ -25,12 +28,15 @@ def select(tags, splits, langs):
             if k in tags
     ])
 
+    # print(DATASET_REGISTRY)
     filtered_corpora = []
+
     for key in registry:
         _splits, f = registry[key]
         isplits = set(_splits).intersection(set(splits))
         isplits = list(isplits)
         for _split in isplits:
+            #print(_split)
             corpora = f(_split)
             corpora = [
                 c for c in corpora \
@@ -45,26 +51,35 @@ def select(tags, splits, langs):
         for corpus in corpora:
             _dict[corpus.tag].append(corpus)
         return _dict
-
+    #print(filtered_corpora)
     corpora = group_by_tag(filtered_corpora)
     pairs = []
+    req_pairs = []
+    #print(corpora)
     for key in corpora:
         # TODO(jerin): Sort for determinism
-        for dx, dy in combinations(corpora[key], 2):
+        # TODO(shashanks): Check soundness
+        for dx, dy in permutations(corpora[key], 2):
+            src_lang, tgt_lang = dx[2], dy[2]
+            if tgt_lang == direction['tgt']:
+                req_pairs.append((dx, dy))             
             pairs.append((dx, dy))
 
+    if direction['tgt']=='xx':
+        return pairs
 
-    return pairs
+    else:
+        return req_pairs
 
 
-def pairs_select(corpora_config, split):
+def pairs_select(corpora_config, split, direction):
     ls = []
     if split == 'valid': split = 'dev'
     for tag, v in corpora_config.items():
         tags = [tag]
         if split in v['splits']:
             splits = [split]
-            pairs = select(tags, splits, v['langs'])
+            pairs = select(tags, splits, v['langs'], direction)
             ls.extend(pairs)
 
     # Set is non-determinism. Sort

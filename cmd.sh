@@ -1,24 +1,46 @@
-#!bin/bash
+#!/bin/bash
+#SBATCH --job-name=bt
+#SBATCH --partition long
+#SBATCH --account shashanks
+#SBATCH --gres=gpu:4
+#SBATCH --nodes=1
+#SBATCH --mem=40G
+#SBATCH --time 3-00:00:00
+#SBATCH --signal=B:HUP@600
+##SBATCH -w gnode37
 
+
+module add use.own
 module load python/3.7.0
 module load pytorch/1.1.0
 
+<<CMT
 IMPORTS=(
     filtered-iitb.tar
     ilci.tar
     national-newscrawl.tar
     ufal-en-tam.tar
     wat-ilmpc.tar
+    bible-en-te.tar
+    eenadu-en-te.tar
+)
+CMT
+
+IMPORTS=(
+    odiencorp.tar
 )
 
 LOCAL_ROOT="/ssd_scratch/cvit/$USER"
 REMOTE_ROOT="ada:/share1/dataset/text"
 
-
 mkdir -p $LOCAL_ROOT/{data,checkpoints}
 
 DATA=$LOCAL_ROOT/data
-CHECKPOINTS=$LOCAL_ROOT/ufal-transformer-big/checkpoints
+CHECKPOINTS=$LOCAL_ROOT/checkpoints
+
+rsync -r /home/shashanks/ilci/ $DATA/ilci/
+
+#rsync -rvz ada:/share1/shashanks/checkpoints/mmall/checkpoint_last.pt $CHECKPOINTS/
 
 function copy {
     for IMPORT in ${IMPORTS[@]}; do
@@ -28,26 +50,48 @@ function copy {
     done
 }
 
-# copy
+function _export {
+    ssh $USER@ada "mkdir -p ada:/share1/$USER/checkpoints/pib"
+    rsync -rvz $CHECKPOINTS/checkpoint_{best,last}.pt ada:/share1/$USER/checkpoints/pib/
+}
+
+trap "_export" SIGHUP
+copy
 export ILMULTI_CORPUS_ROOT=$DATA
+
+python3 preprocess_cvit.py config.yaml
+
+
+ARCH='transformer'
+MAX_TOKENS=3500
+LR=1e-3
+UPDATE_FREQ=128
+MAX_EPOCHS=200
 
 set -x
 function train {
     python3 train.py \
         --task shared-multilingual-translation \
+        --share-all-embeddings \
         --num-workers 0 \
-        --arch transformer \
-        --max-tokens 5000 --lr 1e-4 --min-lr 1e-9 \
-        --optimizer adam \
+        --arch $ARCH \
+        --max-tokens $MAX_TOKENS --lr $LR --min-lr 1e-9 \
+        --optimizer adam --adam-betas '(0.9, 0.98)' \
         --save-dir $CHECKPOINTS \
         --log-format simple --log-interval 200 \
-        --criterion label_smoothed_cross_entropy \
         --dropout 0.1 --attention-dropout 0.1 --activation-dropout 0.1 \
+        --lr-scheduler inverse_sqrt \
+        --clip-norm 0.1 \
         --ddp-backend no_c10d \
-        --update-freq 2 \
-        config.yaml 
-        # --reset-optimizer \
+        --update-freq $UPDATE_FREQ \
+        --max-epoch $MAX_EPOCHS \
+        --criterion label_smoothed_cross_entropy \
+        config.yaml
+
 }
+
+    #    --reset-optimizer \
+    #    --reset-lr-scheduler \
 
 function _test {
     python3 generate.py config.yaml \
@@ -78,3 +122,6 @@ function _test {
 ARG=$1
 eval "$1"
 # _test
+
+wait
+_export

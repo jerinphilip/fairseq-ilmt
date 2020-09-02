@@ -24,7 +24,6 @@ def load_langpair_dataset(
     left_pad_source, left_pad_target, max_source_positions, max_target_positions,
 ):
     # Load everything from config file
-    # print(corpus_pairs)
     src_datasets, tgt_datasets = [], []
     for pair in corpus_pairs:
         src, tgt = pair
@@ -39,13 +38,16 @@ def load_langpair_dataset(
         src_datasets.append(x)
         tgt_datasets.append(y)
 
-        # src -> tgt
-        x, y = wrapped(tgt, src)
-        src_datasets.append(x)
-        tgt_datasets.append(y)
+        # # src -> tgt
+        # x, y = wrapped(tgt, src)
+        # src_datasets.append(x)
+        # tgt_datasets.append(y)
 
     if len(src_datasets) == 1:
         src_dataset, tgt_dataset = src_datasets[0], tgt_datasets[0]
+        sample_ratios = [1] * len(src_datasets)
+        src_dataset = ConcatDataset(src_datasets, sample_ratios)
+        tgt_dataset = ConcatDataset(tgt_datasets, sample_ratios)
 
     else:
         sample_ratios = [1] * len(src_datasets)
@@ -175,13 +177,13 @@ class CVITTranslationTask(FairseqTask):
         # assert len(paths) > 0
         # data_path = paths[epoch % len(paths)]
         from fairseq.data.cvit.utils import pairs_select
-        pairs = pairs_select(self.data['corpora'], split)
+        pairs = pairs_select(self.data['corpora'], split, self.data['direction'])
 
         # infer langcode
         src, tgt = self.args.source_lang, self.args.target_lang
 
-        from ilmulti.sentencepiece import SentencePieceTokenizer
-        tokenizer = SentencePieceTokenizer()
+        from ilmulti.sentencepiece import build_tokenizer
+        tokenizer = build_tokenizer(self.data['tokenizer'])
 
         self.datasets[split] = load_langpair_dataset(pairs, self.src_dict, tokenizer,
             combine=combine, dataset_impl=self.args.dataset_impl,

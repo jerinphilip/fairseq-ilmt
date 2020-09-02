@@ -70,11 +70,13 @@ def main(args, init_distributed=False):
     # Train until the learning rate gets too small
     max_epoch = args.max_epoch or math.inf
     max_update = args.max_update or math.inf
+    trainer.optimizer.set_lr(0.0001)
     lr = trainer.get_lr()
     train_meter = StopwatchMeter()
     train_meter.start()
     valid_losses = [None]
     valid_subsets = args.valid_subset.split(',')
+    print(lr > args.min_lr)
     while lr > args.min_lr and epoch_itr.epoch < max_epoch and trainer.get_num_updates() < max_update:
         # train for one epoch
         train(args, trainer, task, epoch_itr)
