@@ -16,8 +16,6 @@ def read_config(path):
         return data
 
 def build_corpus(corpus):
-	#from ilmulti.sentencepiece import SentencePieceTokenizer
-	#tokenizer = SentencePieceTokenizer()
 	if not LMDBCorpus.exists(corpus):
 		print("LMDB({}) does not exist. Building".format(corpus.path))
 		raw_dataset = _CVITIndexedRawTextDataset(corpus, tokenizer)
