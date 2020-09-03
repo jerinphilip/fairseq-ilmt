@@ -1,13 +1,13 @@
 import os
+import warnings
 from collections import namedtuple
 
 ENV_VAR='ILMULTI_CORPUS_ROOT'
 DATA_ROOT = os.environ.get(ENV_VAR, None)
 if DATA_ROOT is None:
-    raise Exception((
-        "Please define {} in environment variable"
-        .format(ENV_VAR)
-        ))
+    warnings.warn(
+        "Please define {} in environment variable" .format(ENV_VAR)
+    )
 
 DATASET_REGISTRY = {}
 def dataset_register(tag, splits):
